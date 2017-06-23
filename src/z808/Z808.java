@@ -117,7 +117,7 @@ public class Z808 {
     private int qtde_dados1, qtde_dados2, qtde_inst1, qtde_inst2, index_hlt;
     private ArrayList<Integer> Indices;
     private Hashtable<Integer,Thing> Memoria;
-    private File lig; // = new File("/Files/Donwload/z808/Ligador/Ligador/src/ligador/lig.txt");
+    private File lig; 
     public Z808(){
         this.Memoria = new Hashtable<Integer,Thing>();
         this.Indices = new ArrayList<Integer>();
@@ -226,7 +226,7 @@ public class Z808 {
     
     }
 
-    private void carregaInst(Scanner sc, int index, int qtde_inst) { //??????????
+    private void carregaInst(Scanner sc, int index, int qtde_inst) { 
         for(int cont=0; cont < qtde_inst; cont++ ){
             StringTokenizer st = new StringTokenizer(sc.next());
             String opcode;
