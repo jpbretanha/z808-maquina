@@ -23,7 +23,18 @@ public class Z808 {
      * @param args the command line arguments
      */
     private int SP = 0, IP = 0, AX = 0, DX = 0 , SI = 0, DS = 0, SS = 0, CS = 0; // SP-STACK POINTER, IP-INSTRUCTION POINTER, AX-OPERANDO DESTINO/FONTE, DX-OPERANDO FONTE, SI-ÍNDICE, DS-Segmento de Dados SS-Segmento de Pilha, CS-Segmento de Código
-
+    private int ZF = 0, SF = 0; // ZF-ZERO, SF-SINAL
+    private int SR = 0;        // registrador de status, tem as flags OF,ZF e SF (as demais nao foram implementadas)
+    private int qtde_dados1, qtde_dados2, qtde_inst1, qtde_inst2, index_hlt;
+    private ArrayList<Integer> Indices;
+    private Hashtable<Integer,Thing> Memoria;
+    private File entrada; 
+    public Z808(){
+        this.Memoria = new Hashtable<Integer,Thing>();
+        this.Indices = new ArrayList<Integer>();
+        /*carregaDados1();;
+        imprimeMemoria();*/
+    }
     public int getCS() {
         return CS;
     }
@@ -39,8 +50,7 @@ public class Z808 {
     public void setSR(int SR) {
         this.SR = SR;
     }
-    private int ZF = 0, SF = 0; // ZF-ZERO, SF-SINAL
-    private int SR = 0;        // registrador de status, tem as flags OF,ZF e SF (as demais nao foram implementadas)
+    
 
     public int getDS() {
         return DS;
@@ -113,17 +123,6 @@ public class Z808 {
     public void setSI(int SI) {
         this.SI = SI;
     }
-    
-    private int qtde_dados1, qtde_dados2, qtde_inst1, qtde_inst2, index_hlt;
-    private ArrayList<Integer> Indices;
-    private Hashtable<Integer,Thing> Memoria;
-    private File lig; 
-    public Z808(){
-        this.Memoria = new Hashtable<Integer,Thing>();
-        this.Indices = new ArrayList<Integer>();
-        /*carregaDados1();;
-        imprimeMemoria();*/
-    }
 
     public int getQtde_dados1() {
         return qtde_dados1;
@@ -175,17 +174,17 @@ public class Z808 {
     
 
     public File getLig() {
-        return lig;
+        return entrada;
     }
 
-    public void setLig(File lig) {
-        this.lig = lig;
+    public void setLig(File entrada) {
+        this.entrada = entrada;
     }
 
     public void carregaDados1() {
         try {
-            //System.out.print(lig);
-            Scanner sc = new Scanner(new FileReader(lig)).useDelimiter("\\||\\n");
+            //System.out.print(entrada);
+            Scanner sc = new Scanner(new FileReader(entrada)).useDelimiter("\\||\\n");
             qtde_dados1 = Integer.parseInt(sc.next());
             qtde_inst1 = Integer.parseInt(sc.next());
             qtde_dados2 = Integer.parseInt(sc.next());
@@ -286,19 +285,15 @@ public class Z808 {
            prox_index = prox_index + 2;
        }
        //imprimeIndices();
-       if(tam_extra != 0){
-           return prox_index;
-       }
-       else{
-           return prox_index;  
-       }
+       return prox_index;
     }
 
     public int executa(Instrucao inst, JLabel label, int endereco_real) {    // qqer n > 0 = atualiza tab mem , -1 = n precisa atualizar
         int tipo = inst.getTipo();
         String opcode = inst.getOpcode();
 
-        if( tipo == 1){       //nao tem campo valor;
+        if( tipo == 1){  // INSTRUÇÕES SEM O CAMPO VALOR
+            /* INSTRUÇÕES ARITMÉTICAS */
             if(opcode.matches("03C[02]")){   // add ax,dx OU add ax,ax
                if(opcode.charAt(3) == '2' ){
                    AX = DX + AX;
@@ -325,7 +320,7 @@ public class Z808 {
                     label.setText("DIV SI");
                 }
                 else{
-                    bin_divisor = Integer.toBinaryString(AX); 
+                    bin_divisor = Integer.toBinaryString(AX); //div AX
                     label.setText("DIV AX");
                 }
                 bin_divisor = ajusta_bin_string(bin_divisor);
@@ -372,14 +367,17 @@ public class Z808 {
                 IP = IP + 2;
                 return -1;
             }
-            else if(opcode.matches("23C[20]")){   //and ax,dx OU and ax,ax   and ax,ax nao faz nada, nao foi implementada
+            
+            /* INSTRUÇÕES LÓGICAS*/
+            else if(opcode.matches("23C[20]")){   //and ax,dx OU and ax,ax 
                 if(opcode.charAt(3) == '2'){  // and ax,dx
                     AX = AX & DX;
                     ajusta_flags(AX);
                     label.setText("AND AX,DX");
                 }
-                else{
+                else{ //and ax, ax
                     label.setText("AND AX,AX");
+                    AX = AX & AX; //não testei se funciona ainda
                 }
                 IP = IP +2;
                 return -1;
@@ -395,13 +393,13 @@ public class Z808 {
                 label.setText("NOT AX");
                 return -1;
             }
-            else if(opcode.matches("0BC[20]")){  // or ax,dx OU or ax,ax   or ax,ax nao faz nada..
+            else if(opcode.matches("0BC[20]")){  // or ax,dx OU or ax,ax
                 if(opcode.charAt(3) == '2'){  // or ax,dx
                     AX = AX | DX;
                     ajusta_flags(AX);
                     label.setText("OR AX,DX");
                 }
-                else{
+                else{ // não faz nada pq é o msm valor
                     label.setText("OR AX,AX");
                 }
                 IP = IP +2;
@@ -414,13 +412,14 @@ public class Z808 {
                     label.setText("XOR AX,DX");
                 }
                 else{
-                    AX = 0;            // n xor n = 0 sempre..
+                    AX = 0;            // n xor n = 0 sempre
                     ZF = 1;
                     label.setText("XOR AX,AX");
                 }
                 IP = IP +2;
                 return -1;
             }
+            /* INSRUÇÕES DE DESVIO*/
             else if(opcode.equalsIgnoreCase("C3")){        // ret
                 int end = SP;
                 Thing algo = Memoria.get(end);
@@ -429,6 +428,7 @@ public class Z808 {
                 label.setText("RET");
                 return -1;
             }
+            /* INSTRUÇÕES DE MOVIMENTAÇÃO*/
             else if(opcode.matches("8ED[08]")){   // mov ss,ax OU mov ds,ax
                 if(opcode.charAt(3) == '0'){ // mov ss,ax
                     SS = AX;
@@ -510,6 +510,8 @@ public class Z808 {
                     return SI;
                 }
             }
+            
+            /* INSTRUÇÕES DE PILHA */
             else if(opcode.matches("5[80]")){     // pop ax OU push ax
                 if(opcode.charAt(1) == '8'){  // pop ax
                     try{
@@ -549,7 +551,8 @@ public class Z808 {
                 return -1;
             }
         }
-        else{               //tipo 2  -- tem campo valor (cte ou mem)
+        else{  //INSTRUÇÕES DE TIPO 2 - TEM CAMPO VALOR CTE OU MEM
+            /* INSTRUÇÕES ARITMÉTICAS */
             if(opcode.equalsIgnoreCase("05")){  // add ax,cte
                 AX = AX + inst.getValor();
                 ajusta_flags(AX);
@@ -564,6 +567,8 @@ public class Z808 {
                 IP = IP +2;
                 return -1;
             }
+            
+            /* INSTRUÇÕES LÓGICAS */
             else if(opcode.equalsIgnoreCase("25")){   // and ax,cte
                 AX = AX & inst.getValor();
                 ajusta_flags(AX);
@@ -585,6 +590,7 @@ public class Z808 {
                 IP = IP +2;
                 return -1;
             }
+            /* INSTRUÇÕES DE DESVIO */
             else if( opcode.matches("7[45A]")){  // jz end, jnz end ou jp end
                 if(opcode.charAt(1) == '4'){  // jz end
                     switch(SR){
@@ -633,6 +639,8 @@ public class Z808 {
                     return SP;
                 }
             }
+            
+            /* INSTRUÇÕES DE MOVIMENTAÇÃO */
             else if(opcode.matches("A[13]")){   // mov ax,mem ou mov mem,ax
                 IP = IP +2;
                 if(opcode.charAt(1) == '1'){  // mov ax,mem
