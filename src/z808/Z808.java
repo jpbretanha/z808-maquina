@@ -333,11 +333,12 @@ public class Z808 {
                 return -1;
             }
             else if(opcode.matches("2BC[20]")){        //sub ax,dx OU sub ax,ax
-                if(opcode.charAt(3) == 2){    //sub ax,dx
+                if(opcode.charAt(3) == '2'){    //sub ax,dx
                     AX = AX - DX;
                     label.setText("SUB AX,DX");
                 }
                 else{   // sub ax, ax
+                    System.out.println("deu ruim");
                     AX = AX - AX;
                     label.setText("SUB AX,AX");
                 }
