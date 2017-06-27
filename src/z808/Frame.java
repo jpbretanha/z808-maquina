@@ -460,7 +460,7 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_CarregarBotaoActionPerformed
 
     private void AbrirBotaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrirBotaoActionPerformed
-        jFileChooser1 = new JFileChooser();   //cria o jfilechooser
+        jFileChooser1 = new JFileChooser("C:\\Users\\João Pedro Bretanha\\Desktop\\z808\\z808\\Z808\\Z808");   //cria o jfilechooser
         jFileChooser1.setAcceptAllFileFilterUsed(false);  //nao deixa ele mostrar all files
         jFileChooser1.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);  //mostrar apenas diretorios e arquivos
         jFileChooser1.addChoosableFileFilter(new MyFilter());    //atrela ao filtro myfilter (pra mostrar apenas .asm e diretorios)

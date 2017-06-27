@@ -248,6 +248,7 @@ public class Z808 {
             }
             else{   //tem dois tokens, pode ser 2 bytes EB mem, ou 3 bytes 8984 mem
                 opcode = st.nextToken();
+                
                 int valor = Integer.parseInt(st.nextToken());
                 Indices.add(index);
                 Instrucao nova = new Instrucao(opcode,valor ,2);
