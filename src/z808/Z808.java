@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 
 /**
@@ -288,7 +289,7 @@ public class Z808 {
        return prox_index;
     }
 
-    public int executa(Instrucao inst, JLabel label, int endereco_real) {    // qqer n > 0 = atualiza tab mem , -1 = n precisa atualizar
+    public int executa(Instrucao inst, JTextField label, int endereco_real) {    // qqer n > 0 = atualiza tab mem , -1 = n precisa atualizar
         int tipo = inst.getTipo();
         String opcode = inst.getOpcode();
 
