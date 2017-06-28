@@ -65,6 +65,8 @@ public class Frame extends javax.swing.JFrame {
         CSVALOR = new javax.swing.JLabel();
         SIVALOR = new javax.swing.JLabel();
         SSVALOR = new javax.swing.JLabel();
+        comboBox = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -186,6 +188,10 @@ public class Frame extends javax.swing.JFrame {
 
         SSVALOR.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
 
+        comboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"0", "10", "20", "30"}));
+
+        jLabel6.setText("Tamanho extra da pilha:");
+
         javax.swing.GroupLayout PainelLayout = new javax.swing.GroupLayout(Painel);
         Painel.setLayout(PainelLayout);
         PainelLayout.setHorizontalGroup(
@@ -222,7 +228,7 @@ public class Frame extends javax.swing.JFrame {
                                                     .addComponent(DSValor)
                                                     .addComponent(SSValor)
                                                     .addComponent(CSValor))))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(PainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(SRValor, javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(ExecutarBotao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -261,13 +267,19 @@ public class Frame extends javax.swing.JFrame {
                                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PainelLayout.createSequentialGroup()
                                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                         .addComponent(jLabel10)))))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGap(53, 53, 53)
                                         .addGroup(PainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(SPVALOR, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(CSVALOR, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(SRVALOR, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(SIVALOR, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PainelLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(10, 10, 10)))
                                 .addContainerGap())))
                     .addGroup(PainelLayout.createSequentialGroup()
                         .addComponent(Zeroflag)
@@ -358,7 +370,9 @@ public class Frame extends javax.swing.JFrame {
                         .addGroup(PainelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Zeroflag)
                             .addComponent(Sinalflag)
-                            .addComponent(Overflowflag))
+                            .addComponent(Overflowflag)
+                            .addComponent(comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -417,8 +431,8 @@ public class Frame extends javax.swing.JFrame {
     private void CarregarBotaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CarregarBotaoActionPerformed
         if( arqv != null){
             proc.carregaDados1();
-            //int tam_extra = Integer.parseInt(TamExtraPilha.getSelectedItem().toString());  //pega valor selecionado na combobox pra criar a area extra de pilha
-            proc.setSP(proc.carregaPilha(0));
+            int tam_extra = Integer.parseInt(comboBox.getSelectedItem().toString());  //pega valor selecionado na combobox pra criar a area extra de pilha
+            proc.setSP(proc.carregaPilha(tam_extra));
             SPVALOR.setText(String.valueOf(proc.getSP()));  //atualiza valor do reg sp com a pos do final da pilha
             this.model=new DefaultTableModel(){   //cria um default table model
                 @Override
@@ -506,6 +520,7 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JLabel SSValor;
     private javax.swing.JCheckBox Sinalflag;
     private javax.swing.JCheckBox Zeroflag;
+    private javax.swing.JComboBox comboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -513,6 +528,7 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -525,6 +541,7 @@ public class Frame extends javax.swing.JFrame {
     private int flag_para = 0;
     private Z808 proc;
     private String[] TamExtra ={"0", "10", "20", "30"};
+    
 
     private void atualiza_regsandflags() {
         AXVALOR.setText(String.valueOf(proc.getAX()));
